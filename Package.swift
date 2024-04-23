@@ -12,7 +12,8 @@ let package = Package(
     ],
     targets: [
         .target(
-            name: "RRuleSwift"
+            name: "RRuleSwift",
+            resources: [.process("lib")]
         ),
         .testTarget(
             name: "RRuleSwiftTests",
