@@ -23,12 +23,8 @@ public struct RRule {
         return dateFormatter
     }()
 
-    internal static let ISO8601DateFormatter: DateFormatter = {
-        let dateFormatter = DateFormatter()
-        dateFormatter.timeZone = TimeZone(secondsFromGMT: 0)
-        dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
-        return dateFormatter
-    }()
+    // default timezone of the ISO8601DateFormatter is already GMT
+    static let ISO8601DateFormatter = Foundation.ISO8601DateFormatter()
 
     public static func ruleFromString(_ string: String) -> RecurrenceRule? {
         let string = string.trimmingCharacters(in: .whitespaces)
