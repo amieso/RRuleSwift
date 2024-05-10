@@ -60,7 +60,7 @@ public struct RecurrenceRule {
     public var bymonthday = [Int]()
 
     /// The days of the week associated with the recurrence rule, as an array of EKWeekday objects.
-    public var byweekday = [EKWeekday]()
+    public var byweekday = [RecurrenceRule.ByDay]()
 
     /// The hours of the day associated with the recurrence rule, as an array of integers.
     public var byhour = [Int]()
@@ -91,5 +91,24 @@ public struct RecurrenceRule {
 
     public func toRRuleString() -> String {
         return RRule.stringFromRule(self)
+    }
+}
+
+public extension RecurrenceRule {
+
+    // this rule can be specified like `BYDAY=2TU`, which means "every second tuesday"
+    // so we need to parse the cardinality and the weekday of the rule
+    struct ByDay {
+
+        public var cardinality: Int?
+        public var weekday: EKWeekday
+        
+        public init(
+            cardinality: Int? = nil,
+            weekday: EKWeekday
+        ) {
+            self.cardinality = cardinality
+            self.weekday = weekday
+        }
     }
 }

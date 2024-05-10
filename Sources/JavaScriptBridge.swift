@@ -52,6 +52,15 @@ internal extension EKWeekday {
     }
 }
 
+internal extension RecurrenceRule.ByDay {
+    
+    fileprivate func toJSONSymbol() -> String {
+        
+        guard let cardinality, cardinality != 0 else { return weekday.toJSONSymbol()}
+        return "\(weekday.toJSONSymbol()).nth(\(String(cardinality)))"
+    }
+}
+
 internal extension RecurrenceRule {
     func toJSONString(endless endlessRecurrenceCount: Int) -> String {
         var jsonString = "freq: \(frequency.toJSONFrequency()),"
@@ -117,9 +126,7 @@ internal extension RecurrenceRule {
             jsonString += "bymonthday: [\(bymonthdayStrings.joined(separator: ","))],"
         }
 
-        let byweekdayJSSymbols = byweekday.map({ (weekday) -> String in
-            return weekday.toJSONSymbol()
-        })
+        let byweekdayJSSymbols = byweekday.map { $0.toJSONSymbol() }
         if byweekdayJSSymbols.count > 0 {
             jsonString += "byweekday: [\(byweekdayJSSymbols.joined(separator: ","))],"
         }
