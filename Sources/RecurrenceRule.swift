@@ -100,7 +100,15 @@ public extension RecurrenceRule {
     // so we need to parse the cardinality and the weekday of the rule
     struct ByDay {
 
-        var cardinality: Int?
-        var weekday: EKWeekday
+        public var cardinality: Int?
+        public var weekday: EKWeekday
+        
+        public init(
+            cardinality: Int? = nil,
+            weekday: EKWeekday
+        ) {
+            self.cardinality = cardinality
+            self.weekday = weekday
+        }
     }
 }
