@@ -20,6 +20,9 @@ public struct Iterator {
             print("[RRuleSwift] rrule.js error: \(String(describing: exception))")
         }
         let _ = context?.evaluateScript(rrulejs)
+
+        // this is a hack to import RRule so that it can be used throughout 😬
+        let _ = context?.evaluateScript("var RRule = this.rrule.RRule;")
         return context
     }()
 }
@@ -31,7 +34,7 @@ public extension RecurrenceRule {
         }
 
         let ruleJSONString = toJSONString(endless: endlessRecurrenceCount)
-        let _ = Iterator.rruleContext?.evaluateScript("var rule = new RRule({ \(ruleJSONString) })")
+        let _ = Iterator.rruleContext?.evaluateScript("var rule = new RRule({ \(ruleJSONString) });")
         guard let allOccurrences = Iterator.rruleContext?.evaluateScript("rule.all()").toArray() as? [Date] else {
             return []
         }
@@ -71,7 +74,7 @@ public extension RecurrenceRule {
         let untilDateJSON = RRule.ISO8601DateFormatter.string(from: untilDate)
 
         let ruleJSONString = toJSONString(endless: endlessRecurrenceCount)
-        let _ = Iterator.rruleContext?.evaluateScript("var rule = new RRule({ \(ruleJSONString) })")
+        let _ = Iterator.rruleContext?.evaluateScript("var rule = new RRule({ \(ruleJSONString) });")
         guard let betweenOccurrences = Iterator.rruleContext?.evaluateScript("rule.between(new Date('\(beginDateJSON)'), new Date('\(untilDateJSON)'), true)").toArray() as? [Date] else {
             return []
         }
