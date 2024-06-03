@@ -125,7 +125,7 @@ public extension Collection where Element == RecurrenceRule {
 
         if let dtStart {
             let dtStartString = RRule.ISO8601DateFormatter.string(from: dtStart)
-            let script = "rruleSet.rrule(RRule.fromString(RRule.optionsToString({ dtstart: \(dtStartString) })));"
+            let script = "rruleSet.rrule(RRule.fromString(RRule.optionsToString({ dtstart: new Date('\(dtStartString)') })));"
             let _ = RRuleSwiftIterator.rruleContext?.evaluateScript(script)
         }
 
