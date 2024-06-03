@@ -121,7 +121,7 @@ public extension Collection where Element == RecurrenceRule {
         let beginDateJSON = RRule.ISO8601DateFormatter.string(from: beginDate)
         let untilDateJSON = RRule.ISO8601DateFormatter.string(from: untilDate)
 
-        let _ = RRuleSwiftIterator.rruleContext?.evaluateScript("const rruleSet = new RRuleSet();")
+        let _ = RRuleSwiftIterator.rruleContext?.evaluateScript("var rruleSet = new RRuleSet();")
 
         if let dtStart {
             let dtStartString = RRule.ISO8601DateFormatter.string(from: dtStart)
