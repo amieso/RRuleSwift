@@ -106,7 +106,7 @@ public extension RecurrenceRule {
 
 public enum RRuleSet {
 
-    public func occurrences(
+    static public func occurrences(
         rules: [String],
         dtStart: Date? = nil,
         between date: Date,
