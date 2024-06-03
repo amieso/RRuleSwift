@@ -132,7 +132,7 @@ public enum RRuleSet {
         let dtStartRuleScript = "RRule.optionsToString({ dtstart });"
         let dtStartRuleString = RRuleSwiftIterator.rruleContext?.evaluateScript(dtStartRuleScript).toString()
         let allRules = [dtStartRuleString] + rules
-        let normalizedRecurrenceRules = allRules.compactMap { $0 }.joined(separator: "\n")
+        let normalizedRecurrenceRules = allRules.compactMap { $0 }.joined(separator: "\\n")
 
         print("[RRuleSwift] rules: \(allRules)")
 
