@@ -26,6 +26,7 @@ public struct Iterator {
         // this is a hack to import RRule so that it can be used throughout 😬
         let _ = context?.evaluateScript("var RRule = this.rrule.RRule;")
         let _ = context?.evaluateScript("var RRuleSet = this.rrule.RRuleSet;")
+        let _ = context?.evaluateScript("var rrulestr = this.rrule.rrulestr;")
         return context
     }()
 }
@@ -101,6 +102,61 @@ public extension RecurrenceRule {
 
         return occurrences.sorted { $0.isBeforeOrSame(with: $1) }
     }
+}
+
+public enum RRuleSet {
+
+    func occurrences(
+        rules: [String],
+        dtStart: Date? = nil,
+        between date: Date,
+        and otherDate: Date,
+        endless endlessRecurrenceCount: Int = RRuleSwiftIterator.endlessRecurrenceCount
+    ) -> [Date] {
+
+        guard let _ = JavaScriptBridge.rrulejs() else {
+            return []
+        }
+
+        let beginDate = date.isBeforeOrSame(with: otherDate) ? date : otherDate
+        let untilDate = otherDate.isAfterOrSame(with: date) ? otherDate : date
+        let beginDateJSON = RRule.ISO8601DateFormatter.string(from: beginDate)
+        let untilDateJSON = RRule.ISO8601DateFormatter.string(from: untilDate)
+
+        var rules: [String] = rules
+
+        if let dtStart {
+            let dtStartISOString = RRule.ISO8601DateFormatter.string(from: dtStart)
+            let dtStartRuleScript = "RRule.optionsToString({ dtstart: new Date('\(dtStartISOString)') })"
+            let dtStartRuleString = RRuleSwiftIterator.rruleContext?.evaluateScript(dtStartRuleScript).toString()
+            rules += [dtStartRuleString].compactMap { $0 }
+        }
+
+        print("[RRuleSwift] rules: \(rules)")
+
+        let normalizedRecurrenceRules = rules.joined(separator: "\n")
+
+        let rruleSetScript = """
+            var rruleSet = rrulestr('\(normalizedRecurrenceRules)', {
+                forceset: true,
+                cache: false,
+                dtstart,
+            }) as RRuleSet;
+            """
+
+        let _ = RRuleSwiftIterator.rruleContext?.evaluateScript(rruleSetScript)
+
+        let betweenScript = "rruleSet.between(new Date('\(beginDateJSON)'), new Date('\(untilDateJSON)'), true);"
+
+        guard
+            let betweenOccurrences = RRuleSwiftIterator.rruleContext?.evaluateScript(betweenScript).toArray() as? [Date]
+        else {
+            return []
+        }
+
+        return betweenOccurrences.sorted { $0.isBeforeOrSame(with: $1) }
+    }
+
 }
 
 public extension Collection where Element == RecurrenceRule {
