@@ -130,8 +130,8 @@ public extension Collection where Element == RecurrenceRule {
         }
 
         for rule in self {
-            let ruleString = rule.toJSONString(endless: endlessRecurrenceCount)
-            let script = "rruleSet.rrule(new RRule({ \(ruleString)) });"
+            let ruleJSONString = rule.toJSONString(endless: endlessRecurrenceCount)
+            let script = "rruleSet.rrule(new RRule({ \(ruleJSONString) });"
             let _ = RRuleSwiftIterator.rruleContext?.evaluateScript(script)
         }
 
