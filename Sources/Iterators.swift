@@ -131,11 +131,11 @@ public extension Collection where Element == RecurrenceRule {
 
         for rule in self {
             let ruleJSONString = rule.toJSONString(endless: endlessRecurrenceCount)
-            let script = "rruleSet.rrule(new RRule({ \(ruleJSONString) });"
+            let script = "rruleSet.rrule(new RRule({ \(ruleJSONString) }));"
             let _ = RRuleSwiftIterator.rruleContext?.evaluateScript(script)
         }
 
-        let betweenScript = "rruleSet.between(new Date('\(beginDateJSON)'), new Date('\(untilDateJSON)'), true)"
+        let betweenScript = "rruleSet.between(new Date('\(beginDateJSON)'), new Date('\(untilDateJSON)'), true);"
 
         guard
             let betweenOccurrences = RRuleSwiftIterator.rruleContext?.evaluateScript(betweenScript).toArray() as? [Date]
