@@ -128,65 +128,13 @@ public enum RRuleSet {
         let untilDateJSON = RRule.ISO8601DateFormatter.string(from: untilDate)
         let dtStartISOString = RRule.ISO8601DateFormatter.string(from: dtStart)
 
-//        let _ = RRuleSwiftIterator.rruleContext?.evaluateScript("var dtstart = new Date('\(dtStartISOString)');")
-//        let dtStartRuleScript = "RRule.optionsToString({ dtstart });"
-//        let dtStartRuleString = RRuleSwiftIterator.rruleContext?.evaluateScript(dtStartRuleScript).toString()
-//        let allRules = [dtStartRuleString] + rules
-//        let normalizedRecurrenceRules = allRules.compactMap { $0 }.joined(separator: "\\n")
+        // we use `\\n` as the separator for javascript to escaping new lines correctly
         let normalizedRecurrenceRules = rules.joined(separator: "\\n")
-
-        print("[RRuleSwift] rules: \(rules)")
 
         let rruleSetScript =
             "var rruleSet = rrulestr('\(normalizedRecurrenceRules)', { cache: false, dtstart: new Date('\(dtStartISOString)') });"
 
         let _ = RRuleSwiftIterator.rruleContext?.evaluateScript(rruleSetScript)
-
-        let betweenScript = "rruleSet.between(new Date('\(beginDateJSON)'), new Date('\(untilDateJSON)'), true);"
-
-        guard
-            let betweenOccurrences = RRuleSwiftIterator.rruleContext?.evaluateScript(betweenScript).toArray() as? [Date]
-        else {
-            return []
-        }
-
-        return betweenOccurrences.sorted { $0.isBeforeOrSame(with: $1) }
-    }
-
-}
-
-public extension Collection where Element == RecurrenceRule {
-
-    func occurrences(
-        dtStart: Date?,
-        between date: Date,
-        and otherDate: Date,
-        endless endlessRecurrenceCount: Int = RRuleSwiftIterator.endlessRecurrenceCount
-    ) -> [Date] {
-
-        guard let _ = JavaScriptBridge.rrulejs() else {
-            return []
-        }
-
-        let beginDate = date.isBeforeOrSame(with: otherDate) ? date : otherDate
-        let untilDate = otherDate.isAfterOrSame(with: date) ? otherDate : date
-        let beginDateJSON = RRule.ISO8601DateFormatter.string(from: beginDate)
-        let untilDateJSON = RRule.ISO8601DateFormatter.string(from: untilDate)
-
-        let _ = RRuleSwiftIterator.rruleContext?.evaluateScript("var rruleSet = new RRuleSet();")
-
-        if let dtStart {
-            let dtStartString = RRule.ISO8601DateFormatter.string(from: dtStart)
-            let script =
-                "rruleSet.rrule(RRule.fromString(RRule.optionsToString({ dtstart: new Date('\(dtStartString)') })));"
-            let _ = RRuleSwiftIterator.rruleContext?.evaluateScript(script)
-        }
-
-        for rule in self {
-            let ruleJSONString = rule.toJSONString(endless: endlessRecurrenceCount)
-            let script = "rruleSet.rrule(new RRule({ \(ruleJSONString) }));"
-            let _ = RRuleSwiftIterator.rruleContext?.evaluateScript(script)
-        }
 
         let betweenScript = "rruleSet.between(new Date('\(beginDateJSON)'), new Date('\(untilDateJSON)'), true);"
 
