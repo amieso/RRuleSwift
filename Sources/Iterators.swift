@@ -137,10 +137,10 @@ public enum RRuleSet {
         let normalizedRecurrenceRules = rules.joined(separator: "\n")
 
         let rruleSetScript = """
-            var rruleSet = rrulestr('\(normalizedRecurrenceRules)', {
-                forceset: true,
-                cache: false,
-                dtstart,
+            var rruleSet = rrulestr('\(normalizedRecurrenceRules)', { \
+                forceset: true, \
+                cache: false, \
+                dtstart, \
             }) as RRuleSet;
             """
 
