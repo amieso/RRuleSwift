@@ -9,6 +9,8 @@
 import Foundation
 import JavaScriptCore
 
+public typealias RRuleSwiftIterator = Iterator
+
 public struct Iterator {
     public static let endlessRecurrenceCount = 500
     internal static let rruleContext: JSContext? = {
