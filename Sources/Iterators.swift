@@ -25,6 +25,7 @@ public struct Iterator {
 
         // this is a hack to import RRule so that it can be used throughout 😬
         let _ = context?.evaluateScript("var RRule = this.rrule.RRule;")
+        let _ = context?.evaluateScript("var RRuleSet = this.rrule.RRuleSet;")
         return context
     }()
 }
