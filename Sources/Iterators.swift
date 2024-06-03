@@ -134,10 +134,11 @@ public enum RRuleSet {
         let allRules = [dtStartRuleString] + rules
         let normalizedRecurrenceRules = allRules.compactMap { $0 }.joined(separator: "\n")
 
-        let rruleSetScript =
-            "var rruleSet = rrulestr('\(normalizedRecurrenceRules)', { forceset: true, cache: false, dtstart });"
+        print("[RRuleSwift] rules: \(allRules)")
 
-        print("[RRuleSwift] rules: \(normalizedRecurrenceRules)")
+        let rruleSetScript =
+            "var rruleSet = rrulestr('\(normalizedRecurrenceRules)', { cache: false });"
+
 
         let _ = RRuleSwiftIterator.rruleContext?.evaluateScript(rruleSetScript)
 
