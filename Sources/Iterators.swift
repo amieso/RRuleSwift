@@ -79,7 +79,11 @@ public extension RecurrenceRule {
 
         let ruleJSONString = toJSONString(endless: endlessRecurrenceCount)
         let _ = Iterator.rruleContext?.evaluateScript("var rule = new RRule({ \(ruleJSONString) });")
-        guard let betweenOccurrences = Iterator.rruleContext?.evaluateScript("rule.between(new Date('\(beginDateJSON)'), new Date('\(untilDateJSON)'), true)").toArray() as? [Date] else {
+        guard
+            let betweenOccurrences = Iterator.rruleContext?
+                .evaluateScript("rule.between(new Date('\(beginDateJSON)'), new Date('\(untilDateJSON)'), true)")
+                .toArray() as? [Date]
+        else {
             return []
         }
 
@@ -106,7 +110,7 @@ public extension RecurrenceRule {
 
 public enum RRuleSet {
 
-    static public func occurrences(
+    public static func occurrences(
         rules: [String],
         dtStart: Date? = nil,
         between date: Date,
@@ -123,26 +127,26 @@ public enum RRuleSet {
         let beginDateJSON = RRule.ISO8601DateFormatter.string(from: beginDate)
         let untilDateJSON = RRule.ISO8601DateFormatter.string(from: untilDate)
 
-        var rules: [String] = rules
+//        if let dtStart {
+//            let dtStartISOString = RRule.ISO8601DateFormatter.string(from: dtStart)
+//            let dtStartRuleScript = "RRule.optionsToString({ dtstart: new Date('\(dtStartISOString)') })"
+//            let dtStartRuleString = RRuleSwiftIterator.rruleContext?.evaluateScript(dtStartRuleScript).toString()
+//            // rules += [dtStartRuleString].compactMap { $0 }
+//        }
+
+        let normalizedRecurrenceRules = rules.joined(separator: "\n")
+        let rruleSetScript: String
 
         if let dtStart {
             let dtStartISOString = RRule.ISO8601DateFormatter.string(from: dtStart)
-            let dtStartRuleScript = "RRule.optionsToString({ dtstart: new Date('\(dtStartISOString)') })"
-            let dtStartRuleString = RRuleSwiftIterator.rruleContext?.evaluateScript(dtStartRuleScript).toString()
-            rules += [dtStartRuleString].compactMap { $0 }
+            rruleSetScript =
+                "var rruleSet = rrulestr('\(normalizedRecurrenceRules)', { forceset: true, cache: false, dtstart: RRule.optionsToString({ dtstart: new Date('\(dtStartISOString)') }) }) as RRuleSet;"
+        } else {
+            rruleSetScript =
+                "var rruleSet = rrulestr('\(normalizedRecurrenceRules)', { forceset: true, cache: false }) as RRuleSet;"
         }
 
         print("[RRuleSwift] rules: \(rules)")
-
-        let normalizedRecurrenceRules = rules.joined(separator: "\n")
-
-        let rruleSetScript = """
-            var rruleSet = rrulestr('\(normalizedRecurrenceRules)', { \
-                forceset: true, \
-                cache: false, \
-                dtstart, \
-            }) as RRuleSet;
-            """
 
         let _ = RRuleSwiftIterator.rruleContext?.evaluateScript(rruleSetScript)
 
@@ -181,7 +185,8 @@ public extension Collection where Element == RecurrenceRule {
 
         if let dtStart {
             let dtStartString = RRule.ISO8601DateFormatter.string(from: dtStart)
-            let script = "rruleSet.rrule(RRule.fromString(RRule.optionsToString({ dtstart: new Date('\(dtStartString)') })));"
+            let script =
+                "rruleSet.rrule(RRule.fromString(RRule.optionsToString({ dtstart: new Date('\(dtStartString)') })));"
             let _ = RRuleSwiftIterator.rruleContext?.evaluateScript(script)
         }
 
