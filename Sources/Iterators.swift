@@ -128,17 +128,17 @@ public enum RRuleSet {
         let untilDateJSON = RRule.ISO8601DateFormatter.string(from: untilDate)
         let dtStartISOString = RRule.ISO8601DateFormatter.string(from: dtStart)
 
-        let _ = RRuleSwiftIterator.rruleContext?.evaluateScript("var dtstart = new Date('\(dtStartISOString)');")
-        let dtStartRuleScript = "RRule.optionsToString({ dtstart });"
-        let dtStartRuleString = RRuleSwiftIterator.rruleContext?.evaluateScript(dtStartRuleScript).toString()
-        let allRules = [dtStartRuleString] + rules
-        let normalizedRecurrenceRules = allRules.compactMap { $0 }.joined(separator: "\\n")
+//        let _ = RRuleSwiftIterator.rruleContext?.evaluateScript("var dtstart = new Date('\(dtStartISOString)');")
+//        let dtStartRuleScript = "RRule.optionsToString({ dtstart });"
+//        let dtStartRuleString = RRuleSwiftIterator.rruleContext?.evaluateScript(dtStartRuleScript).toString()
+//        let allRules = [dtStartRuleString] + rules
+//        let normalizedRecurrenceRules = allRules.compactMap { $0 }.joined(separator: "\\n")
+        let normalizedRecurrenceRules = rules.joined(separator: "\\n")
 
-        print("[RRuleSwift] rules: \(allRules)")
+        print("[RRuleSwift] rules: \(rules)")
 
         let rruleSetScript =
-            "var rruleSet = rrulestr('\(normalizedRecurrenceRules)', { cache: false });"
-
+            "var rruleSet = rrulestr('\(normalizedRecurrenceRules)', { cache: false, dtstart: new Date('\(dtStartISOString)') });"
 
         let _ = RRuleSwiftIterator.rruleContext?.evaluateScript(rruleSetScript)
 
