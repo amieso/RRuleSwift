@@ -103,6 +103,7 @@ public extension RecurrenceRule {
 public extension Collection where Element == RecurrenceRule {
 
     func occurrences(
+        dtStart: Date?,
         between date: Date,
         and otherDate: Date,
         endless endlessRecurrenceCount: Int = RRuleSwiftIterator.endlessRecurrenceCount
@@ -118,6 +119,12 @@ public extension Collection where Element == RecurrenceRule {
         let untilDateJSON = RRule.ISO8601DateFormatter.string(from: untilDate)
 
         let _ = RRuleSwiftIterator.rruleContext?.evaluateScript("const rruleSet = new RRuleSet();")
+
+        if let dtStart {
+            let dtStartString = RRule.ISO8601DateFormatter.string(from: dtStart)
+            let script = "rruleSet.rrule(RRule.fromString(RRule.optionsToString({ dtstart: \(dtStartString) })));"
+            let _ = RRuleSwiftIterator.rruleContext?.evaluateScript(script)
+        }
 
         for rule in self {
             let ruleString = rule.toJSONString(endless: endlessRecurrenceCount)
