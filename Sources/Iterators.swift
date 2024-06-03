@@ -140,10 +140,10 @@ public enum RRuleSet {
         if let dtStart {
             let dtStartISOString = RRule.ISO8601DateFormatter.string(from: dtStart)
             rruleSetScript =
-                "var rruleSet = rrulestr('\(normalizedRecurrenceRules)', { forceset: true, cache: false, dtstart: RRule.optionsToString({ dtstart: new Date('\(dtStartISOString)') }) }) as RRuleSet;"
+                "var rruleSet = rrulestr('\(normalizedRecurrenceRules)', { forceset: true, cache: false, dtstart: RRule.optionsToString({ dtstart: new Date('\(dtStartISOString)') }) });"
         } else {
             rruleSetScript =
-                "var rruleSet = rrulestr('\(normalizedRecurrenceRules)', { forceset: true, cache: false }) as RRuleSet;"
+                "var rruleSet = rrulestr('\(normalizedRecurrenceRules)', { forceset: true, cache: false });"
         }
 
         print("[RRuleSwift] rules: \(rules)")
