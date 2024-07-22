@@ -29,7 +29,7 @@ public struct RecurrenceRule {
     /// The start date of recurrence rule.
     ///
     /// The default value of this property is current date.
-    public var startDate = Date()
+    public var startDate: Date?
 
     /// Indicates when the recurrence rule ends. This can be represented by an end date or a number of occurrences.
     public var recurrenceEnd: EKRecurrenceEnd?

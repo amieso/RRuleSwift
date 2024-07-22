@@ -194,7 +194,7 @@ public struct RRule {
 
         rruleString += "WKST=\(rule.firstDayOfWeek.toSymbol());"
 
-        rruleString += "DTSTART=\(dateFormatter.string(from: rule.startDate as Date));"
+        rule.startDate.map { rruleString += "DTSTART=\(dateFormatter.string(from: $0 as Date));" }
 
         if let endDate = rule.recurrenceEnd?.endDate {
             rruleString += "UNTIL=\(dateFormatter.string(from: endDate));"
