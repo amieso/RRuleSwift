@@ -98,7 +98,7 @@ public extension RecurrenceRule {
 
     // this rule can be specified like `BYDAY=2TU`, which means "every second tuesday"
     // so we need to parse the cardinality and the weekday of the rule
-    struct ByDay {
+    struct ByDay: Equatable {
 
         public var cardinality: Int?
         public var weekday: EKWeekday
