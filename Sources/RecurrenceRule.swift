@@ -29,7 +29,7 @@ public struct RecurrenceRule {
     /// The start date of recurrence rule.
     ///
     /// The default value of this property is current date.
-    public var startDate = Date()
+    public var startDate: Date?
 
     /// Indicates when the recurrence rule ends. This can be represented by an end date or a number of occurrences.
     public var recurrenceEnd: EKRecurrenceEnd?
@@ -98,7 +98,7 @@ public extension RecurrenceRule {
 
     // this rule can be specified like `BYDAY=2TU`, which means "every second tuesday"
     // so we need to parse the cardinality and the weekday of the rule
-    struct ByDay {
+    struct ByDay: Equatable {
 
         public var cardinality: Int?
         public var weekday: EKWeekday
